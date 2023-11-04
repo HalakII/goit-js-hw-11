@@ -1,60 +1,70 @@
-export function fetchBreeds() {
-  const BASE_URL = 'https://api.thecatapi.com/v1';
-  const END_POINT = '/breeds';
-
-  const url = BASE_URL + END_POINT;
-
-  // console.log(url);
-  const options = {
-    headers: {
-      'x-api-key':
-        'live_ersgwzUABvriZ6nRWzsdRfNKFCOgdiewRlrapQ4SSUvSN5ilvdN1PeidqaKq2hwj',
-    },
-  };
-  return fetch(url, options).then(response => {
-    // console.log(response);
-    if (!response.ok) {
-      throw new Error(response.status);
-    }
-    return response.json();
-  });
-}
-
-export function fetchCatByBreed(breedId) {
-  const BASE_URL = 'https://api.thecatapi.com/v1';
-  const END_POINT = '/images/search';
-  const PARAMS = `?breed_ids=${breedId}`;
-  const url = BASE_URL + END_POINT + PARAMS;
-  // console.log(url);
-  const options = {
-    headers: {
-      'x-api-key':
-        'live_ersgwzUABvriZ6nRWzsdRfNKFCOgdiewRlrapQ4SSUvSN5ilvdN1PeidqaKq2hwj',
-    },
-  };
-  return fetch(url, options).then(response => {
-    // console.log(response);
-    if (!response.ok) {
-      throw new Error(response.status);
-    }
-    return response.json();
-  });
-}
-
-// ===============================================
 // import axios from 'axios';
 
+export class ImagesPixabayApi {
+  static #API_KEY = '40453479-a11ad8876b027e59d8fa15ee5';
+  static #PAGE_LIMIT = 40;
+  static #BASE_URL = 'https://pixabay.com/api/?';
+
+  constructor() {
+    this.q = '';
+    this.page = 1;
+  }
+
+  getImages() {
+    const PARAMS = new URLSearchParams({
+      q: this.q,
+      page: this.page,
+      image_type: 'photo',
+      orientation: 'horizontal',
+      safesearch: true,
+      per_page: ImagesPixabayApi.#PAGE_LIMIT,
+      key: ImagesPixabayApi.#API_KEY,
+    });
+
+    const url = ImagesPixabayApi.#BASE_URL + PARAMS;
+    console.log(url);
+    return fetch(url)
+      .then(res => {
+        if (res.ok) return res.json();
+        return Promise.reject(res.status);
+      })
+      .catch(er => {
+        console.log(er);
+      });
+  }
+}
+
+// ============================================
+// export function fetchImages() {
+//   const BASE_URL = 'https://pixabay.com/api/?';
+//   const API_KEY = '40453479-a11ad8876b027e59d8fa15ee5';
+
+//   const PARAMS = new URLSearchParams({
+//     q: '',
+//     image_type: 'photo',
+//     orientation: 'horizontal',
+//     safesearch: true,
+//     page: 1,
+//     per_page: 40,
+//   });
+
+//   const url = `${BASE_URL}key=${API_KEY}&q=""&${PARAMS}`;
+//   console.log(url);
+//   return fetch(url).then(response => {
+//     console.log(response);
+//     if (!response.ok) {
+//       throw new Error(response.status);
+//     }
+//     return response.json();
+//   });
+// }
+
+// ===============================================================
 // axios.defaults.headers.common['x-api-key'] =
 //   'live_ersgwzUABvriZ6nRWzsdRfNKFCOgdiewRlrapQ4SSUvSN5ilvdN1PeidqaKq2hwj';
 
 // export function fetchBreeds() {
 //   return axios
 //     .get('https://api.thecatapi.com/v1/breeds')
-//     .then(response => response.data);
-// }
-
-// export function fetchCatByBreed(breedId) {
-//   return axios
-//     .get(`https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`)
 //     .then(response => response.data);
 // }
