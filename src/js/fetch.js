@@ -1,9 +1,9 @@
 // import axios from 'axios';
 
 export class ImagesPixabayApi {
-  static #API_KEY = '40453479-a11ad8876b027e59d8fa15ee5';
-  static #PAGE_LIMIT = 40;
-  static #BASE_URL = 'https://pixabay.com/api/?';
+  static API_KEY = '40453479-a11ad8876b027e59d8fa15ee5';
+  static PAGE_LIMIT = 40;
+  static BASE_URL = 'https://pixabay.com/api/?';
 
   constructor() {
     this.q = '';
@@ -18,11 +18,11 @@ export class ImagesPixabayApi {
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: true,
-      per_page: ImagesPixabayApi.#PAGE_LIMIT,
-      key: ImagesPixabayApi.#API_KEY,
+      per_page: ImagesPixabayApi.PAGE_LIMIT,
+      key: ImagesPixabayApi.API_KEY,
     });
 
-    const url = ImagesPixabayApi.#BASE_URL + PARAMS;
+    const url = ImagesPixabayApi.BASE_URL + PARAMS;
     console.log(url);
     return fetch(url)
       .then(res => {
