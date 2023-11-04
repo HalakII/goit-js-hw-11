@@ -8,6 +8,7 @@ export class ImagesPixabayApi {
   constructor() {
     this.q = '';
     this.page = 1;
+    this.totalPage = 1;
   }
 
   getImages() {
@@ -26,7 +27,7 @@ export class ImagesPixabayApi {
     return fetch(url)
       .then(res => {
         if (res.ok) return res.json();
-        return Promise.reject(res.status);
+        throw new Error(res.status);
       })
       .catch(er => {
         console.log(er);
