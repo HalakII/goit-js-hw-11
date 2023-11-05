@@ -11,7 +11,7 @@ export class ImagesPixabayApi {
     this.totalPage = 1;
   }
 
-  getImages() {
+  async getImages() {
     const PARAMS = new URLSearchParams({
       q: this.q,
       page: this.page,
@@ -24,14 +24,17 @@ export class ImagesPixabayApi {
 
     const url = ImagesPixabayApi.BASE_URL + PARAMS;
     console.log(url);
-    return fetch(url)
-      .then(res => {
-        if (res.ok) return res.json();
-        throw new Error(res.status);
-      })
-      .catch(er => {
-        console.log(er);
-      });
+    const response = await fetch(url);
+    const imges = await response.json();
+    return imges;
+    // return await fetch(url)
+    //   .then(res => {
+    //     if (res.ok) return res.json();
+    //     throw new Error(res.status);
+    //   })
+    //   .catch(er => {
+    //     console.log(er);
+    //   });
   }
 }
 
@@ -58,14 +61,4 @@ export class ImagesPixabayApi {
 //     }
 //     return response.json();
 //   });
-// }
-
-// ===============================================================
-// axios.defaults.headers.common['x-api-key'] =
-//   'live_ersgwzUABvriZ6nRWzsdRfNKFCOgdiewRlrapQ4SSUvSN5ilvdN1PeidqaKq2hwj';
-
-// export function fetchBreeds() {
-//   return axios
-//     .get('https://api.thecatapi.com/v1/breeds')
-//     .then(response => response.data);
 // }
