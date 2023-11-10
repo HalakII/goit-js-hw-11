@@ -34,6 +34,7 @@ const callback = async function (entries, observer) {
       const markup = imagesTemplate(data.hits);
       divGallerylEl.insertAdjacentHTML('beforeend', markup);
       lightbox.refresh();
+      smoothScroll();
     } catch (error) {
       console.error('An error occurred:', error);
     }
@@ -97,7 +98,16 @@ function updateStatusObserver() {
     observer.unobserve.infinitiDivEl;
   }
 }
+function smoothScroll() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
 
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
+}
 // ---------------------------------------------------------------
 // with load-more button
 // ---------------------------------------------------------------
