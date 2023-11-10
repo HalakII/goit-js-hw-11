@@ -39,6 +39,7 @@ const callback = async function (entries, observer) {
           "We're sorry, but you've reached the end of search results."
         );
         updateStatusObserver();
+        formQueryEl.reset();
       }
       smoothScroll();
     } catch (error) {
@@ -78,8 +79,8 @@ async function onQuerySelect(event) {
     lightbox.refresh();
     newsImages.totalPage = Math.ceil(data.totalHits / 40);
     observer.observe(infinitiDivEl);
-    updateStatusObserver();
-    formQueryEl.reset();
+    // updateStatusObserver();
+    // formQueryEl.reset();
   } catch (error) {
     console.error('An error occurred:', error);
   }
