@@ -19,7 +19,7 @@ const divGallerylEl = document.querySelector('.gallery');
 const infinitiDivEl = document.querySelector('.infitity-scroll');
 
 formQueryEl.addEventListener('submit', onQuerySelect);
-var options = {
+const options = {
   rootMargin: '500px',
   threshold: 0,
 };
@@ -34,6 +34,12 @@ const callback = async function (entries, observer) {
       const markup = imagesTemplate(data.hits);
       divGallerylEl.insertAdjacentHTML('beforeend', markup);
       lightbox.refresh();
+      if (data.hits <= 40 * newsImages.page) {
+        Notiflix.Notify.info(
+          "We're sorry, but you've reached the end of search results."
+        );
+        updateStatusObserver();
+      }
       smoothScroll();
     } catch (error) {
       console.error('An error occurred:', error);
@@ -62,9 +68,10 @@ async function onQuerySelect(event) {
         'Sorry, there are no images matching your search query. Please try again.'
       );
       event.target.reset();
-      return '';
+      return;
     }
     Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+
     divGallerylEl.innerHTML = '';
     const markup = imagesTemplate(data.hits);
     divGallerylEl.insertAdjacentHTML('beforeend', markup);
