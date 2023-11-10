@@ -34,13 +34,6 @@ const callback = async function (entries, observer) {
       const markup = imagesTemplate(data.hits);
       divGallerylEl.insertAdjacentHTML('beforeend', markup);
       lightbox.refresh();
-      if (data.hits <= 40 * newsImages.page) {
-        Notiflix.Notify.info(
-          "We're sorry, but you've reached the end of search results."
-        );
-        updateStatusObserver();
-        formQueryEl.reset();
-      }
       smoothScroll();
     } catch (error) {
       console.error('An error occurred:', error);
@@ -78,9 +71,11 @@ async function onQuerySelect(event) {
     divGallerylEl.insertAdjacentHTML('beforeend', markup);
     lightbox.refresh();
     newsImages.totalPage = Math.ceil(data.totalHits / 40);
+
+    console.log(newsImages.totalPage);
     observer.observe(infinitiDivEl);
-    // updateStatusObserver();
-    // formQueryEl.reset();
+    updateStatusObserver();
+    formQueryEl.reset();
   } catch (error) {
     console.error('An error occurred:', error);
   }
@@ -103,7 +98,10 @@ function imagesTemplate(images) {
 }
 function updateStatusObserver() {
   if (newsImages.page >= newsImages.totalPage) {
-    observer.unobserve.infinitiDivEl;
+    Notiflix.Notify.info(
+      "We're sorry, but you've reached the end of search results."
+    );
+    observer.unobserve(infinitiDivEl);
   }
 }
 function smoothScroll() {
