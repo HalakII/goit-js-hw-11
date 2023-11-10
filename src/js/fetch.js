@@ -1,4 +1,4 @@
-// import axios from 'axios';
+import axios from 'axios';
 
 export class ImagesPixabayApi {
   static API_KEY = '40453479-a11ad8876b027e59d8fa15ee5';
@@ -23,18 +23,15 @@ export class ImagesPixabayApi {
     });
 
     const url = ImagesPixabayApi.BASE_URL + PARAMS;
-    console.log(url);
-    const response = await fetch(url);
-    const imges = await response.json();
-    return imges;
-    // return await fetch(url)
-    //   .then(res => {
-    //     if (res.ok) return res.json();
-    //     throw new Error(res.status);
-    //   })
-    //   .catch(er => {
-    //     console.log(er);
-    //   });
+
+    try {
+      const response = await axios.get(url);
+      const images = response.data;
+      return images;
+    } catch (error) {
+      console.error('Error fetching images:', error);
+      throw error;
+    }
   }
 }
 

@@ -23,27 +23,27 @@ var options = {
   rootMargin: '500px',
   threshold: 0,
 };
-const callback = function (entries, observer) {
-  entries.forEach(entry => {
+const callback = async function (entries, observer) {
+  entries.forEach(async entry => {
     if (!entry.isIntersecting) return;
-    newsImages.page += 1;
-    updateStatusObserver();
-    newsImages
-      .getImages()
-      .then(data => {
-        const markup = imagesTemplate(data.hits);
-        divGallerylEl.insertAdjacentHTML('beforeend', markup);
-        lightbox.refresh();
-      })
-      .catch(er => console.log(er));
+    try {
+      newsImages.page += 1;
+      updateStatusObserver();
+      const data = await newsImages.getImages();
+
+      const markup = imagesTemplate(data.hits);
+      divGallerylEl.insertAdjacentHTML('beforeend', markup);
+      lightbox.refresh();
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
   });
-  // console.log('test');
 };
 const observer = new IntersectionObserver(callback, options);
 
 loadBtnEl.classList.add('hidden');
 
-function onQuerySelect(event) {
+async function onQuerySelect(event) {
   event.preventDefault();
   newsImages.q = event.target.elements.searchQuery.value;
 
@@ -52,28 +52,29 @@ function onQuerySelect(event) {
       'Sorry, there are no images matching your search query. Please try again.'
     );
   }
+  try {
+    newsImages.page = 1;
+    const data = await newsImages.getImages();
 
-  newsImages.page = 1;
-  newsImages
-    .getImages()
-    .then(data => {
-      if (data.hits.length === 0) {
-        formQueryEl.reset();
-        return Notiflix.Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.'
-        );
-      }
-      Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-      divGallerylEl.innerHTML = '';
-      const markup = imagesTemplate(data.hits);
-      divGallerylEl.insertAdjacentHTML('beforeend', markup);
-      lightbox.refresh();
-      newsImages.totalPage = Math.ceil(data.totalHits / 40);
-      observer.observe(infinitiDivEl);
-      updateStatusObserver();
-      formQueryEl.reset();
-    })
-    .catch(er => console.log(er));
+    if (data.hits.length === 0) {
+      Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+      event.target.reset();
+      return '';
+    }
+    Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+    divGallerylEl.innerHTML = '';
+    const markup = imagesTemplate(data.hits);
+    divGallerylEl.insertAdjacentHTML('beforeend', markup);
+    lightbox.refresh();
+    newsImages.totalPage = Math.ceil(data.totalHits / 40);
+    observer.observe(infinitiDivEl);
+    updateStatusObserver();
+    formQueryEl.reset();
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
 }
 
 function imageTemplate({
